@@ -1,19 +1,15 @@
-# Etap 1: Budowanie gry
-FROM gradle:8.9.0-jdk21 AS builder
+# Etap 1: Budowa gry (HTML)
+FROM gradle:8.9.0-jdk17 AS builder
 
 WORKDIR /app
 COPY . .
 
-# Budujemy wersję HTML gry
+# Budujemy wersję HTML gry (kompilacja GWT)
 RUN gradle html:dist --no-daemon
 
-# Etap 2: Serwer statyczny
+# Etap 2: Serwer statyczny NGINX
 FROM nginx:alpine
-
-# Skopiuj zbudowane pliki z etapu builda
 COPY --from=builder /app/html/build/dist /usr/share/nginx/html
 
-# Otwórz port HTTP
-EXPOSE 80
-
+EXPOSE 8001
 CMD ["nginx", "-g", "daemon off;"]

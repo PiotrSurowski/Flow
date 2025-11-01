@@ -4,33 +4,39 @@ pipeline {
     environment {
         IMAGE_NAME = "flow-game"
         IMAGE_TAG = "latest"
-        REGISTRY = "your-dockerhub-username/flow-game"  // zmień na swój
+        REGISTRY = "your-dockerhub-username/flow-game" // 🔧 Zmień na swoją nazwę użytkownika DockerHub
+        CONTAINER_NAME = "flow-game"
+        PORT = "8001"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
+                echo "🚧 Budowanie obrazu Docker..."
                 sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
             }
         }
 
-        stage('Test') {
+        stage('Test Container') {
             steps {
+                echo "🧪 Testowanie konfiguracji NGINX w kontenerze..."
                 sh 'docker run --rm $IMAGE_NAME:$IMAGE_TAG nginx -t'
             }
         }
 
-        stage('Push to Registry') {
+        stage('Push to Docker Hub') {
             when {
                 branch 'master'
             }
             steps {
+                echo "📦 Wysyłanie obrazu do Docker Hub..."
                 withCredentials([string(credentialsId: 'dockerhub-token', variable: 'DOCKERHUB_TOKEN')]) {
                     sh """
                         echo "$DOCKERHUB_TOKEN" | docker login -u your-dockerhub-username --password-stdin
@@ -43,9 +49,22 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "Deploy your game to server or cloud (manual or automated step)"
-                // Możesz tu dodać np. SSH deploy na serwerze lub kubectl apply
+                echo "🚀 Uruchamianie kontenera z grą na porcie ${PORT}..."
+                sh """
+                    docker rm -f $CONTAINER_NAME || true
+                    docker run -d --name $CONTAINER_NAME -p $PORT:8001 $IMAGE_NAME:$IMAGE_TAG
+                """
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Pipeline zakończony sukcesem!"
+            echo "Gra jest dostępna pod adresem: http://localhost:${PORT} lub http://<adres-serwera>:${PORT}"
+        }
+        failure {
+            echo "❌ Pipeline zakończył się błędem. Sprawdź logi w Jenkinsie."
         }
     }
 }
