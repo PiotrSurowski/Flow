@@ -28,7 +28,7 @@ pipeline {
 
         stage('Push to Registry') {
             when {
-                branch 'main'
+                branch 'master'
             }
             steps {
                 withCredentials([string(credentialsId: 'dockerhub-token', variable: 'DOCKERHUB_TOKEN')]) {
