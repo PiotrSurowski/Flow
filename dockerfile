@@ -10,6 +10,7 @@ RUN gradle html:dist --no-daemon
 # Etap 2: Serwer statyczny NGINX
 FROM nginx:alpine
 COPY --from=builder /app/html/build/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8001
 CMD ["nginx", "-g", "daemon off;"]

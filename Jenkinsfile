@@ -52,7 +52,7 @@ pipeline {
                 echo "🚀 Uruchamianie kontenera z grą na porcie ${PORT}..."
                 sh """
                     docker rm -f $CONTAINER_NAME || true
-                    docker run -d --name $CONTAINER_NAME -p $PORT:8001 $IMAGE_NAME:$IMAGE_TAG
+                    docker run -d --name $CONTAINER_NAME -p $PORT:80 $IMAGE_NAME:$IMAGE_TAG
                 """
             }
         }
