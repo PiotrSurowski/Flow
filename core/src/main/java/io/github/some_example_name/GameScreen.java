@@ -57,8 +57,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // start the playback of the background music
-        // when the screen is shown
         music.play();
     }
 
