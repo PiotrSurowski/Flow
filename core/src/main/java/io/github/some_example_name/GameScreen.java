@@ -68,6 +68,7 @@ public class GameScreen implements Screen {
     }
 
     private void input() {
+        float tolerance = 0.1f;
         float speed = 4f;
         float delta = Gdx.graphics.getDeltaTime();
 
@@ -81,8 +82,28 @@ public class GameScreen implements Screen {
         if (Gdx.input.isTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             game.getViewport().unproject(touchPos);
-            bucketSprite.setCenterX(touchPos.x);
+
+            float bucketCenterX = bucketSprite.getX() + bucketSprite.getWidth() / 2f;
+
+            float dx = touchPos.x - bucketCenterX;
+
+            if (Math.abs(dx) > tolerance) {
+                if (dx < 0) {
+                    moveLeft(speed, delta);
+                } else {
+                    moveRight(speed, delta);
+                }
+            }
         }
+
+    }
+
+    private void moveLeft(float speed, float delta){
+        bucketSprite.translateX(-speed *( delta));
+    }
+
+    private void moveRight(float speed, float delta) {
+        bucketSprite.translateX(speed *( delta));
     }
 
     private void logic() {
