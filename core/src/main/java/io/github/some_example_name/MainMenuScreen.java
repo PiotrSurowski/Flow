@@ -42,7 +42,7 @@ public class MainMenuScreen implements Screen {
         game.getBatch().draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
 
         // Tekst tytułowy
-        GlyphLayout layoutTitle = new GlyphLayout(game.getFont(), "Witaj w grze Drop");
+        GlyphLayout layoutTitle = new GlyphLayout(game.getFont(), "Lzy sasiada");
         float titleX = (worldWidth - layoutTitle.width) / 2f;
         float titleY = worldHeight * 0.75f;
         game.getFont().draw(game.getBatch(), layoutTitle, titleX, titleY);
